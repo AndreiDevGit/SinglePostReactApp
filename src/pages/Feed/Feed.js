@@ -162,7 +162,10 @@ class Feed extends Component {
     })
       .then(res => res.json())
       .then(fileResData => {
-        const imageUrl = fileResData.filePath
+        const imageUrl = fileResData.filePath.replace('\\', '/') //windows backslash fix
+
+        //console.log(imageUrl)
+
         let graphqlQuery = {
           query: `
           mutation {
