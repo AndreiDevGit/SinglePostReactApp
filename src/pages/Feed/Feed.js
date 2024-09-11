@@ -169,7 +169,6 @@ class Feed extends Component {
         }
         //console.log(imageUrl)
         /*-----------------------UGLY windows path fix------------------------------*/
-
         let graphqlQuery = {
           query: `
           mutation {
@@ -186,6 +185,7 @@ class Feed extends Component {
           }
         `
         }
+
         if (this.state.editPost) {
           graphqlQuery = {
             query: `
@@ -274,19 +274,28 @@ class Feed extends Component {
 
   deletePostHandler = postId => {
     this.setState({ postsLoading: true })
-    fetch('http://localhost:8080/feed/post/' + postId, {
-      method: 'DELETE',
+    const graphqlQuery = {
+      query: `
+        mutation {
+          deletePost(id: "${postId}")
+        }
+      `
+    }
+    fetch('http://localhost:8080/graphql', {
+      method: 'POST',
       headers: {
-        Authorization: 'Bearer ' + this.props.token
-      }
+        Authorization: 'Bearer ' + this.props.token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphqlQuery)
     })
       .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Deleting a post failed!')
-        }
         return res.json()
       })
       .then(resData => {
+        if (resData.errors) {
+          throw new Error('Deleting the post failed!')
+        }
         console.log(resData)
         this.loadPosts()
         // this.setState(prevState => {
