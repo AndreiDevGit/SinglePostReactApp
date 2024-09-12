@@ -1,24 +1,28 @@
 # Single Post App
 
-Frond-end App based on React using Rest API
+This is Frond-end App based on React, using **"REST API"** and **"GraphQL",**
+workings with this back-end app: https://github.com/AndreiDevGit/BlogGraphRestApp
 
-Work with this back-end app: https://github.com/AndreiDevGit/BlogRestApp
+If you want switch to clear **"REST API + WebSocket"**, jump to commit:
+`git checkout 9526bc609366d8c802c6169892a2b91c073941f9`
 
+**!!!Do not forget switch back-end also!!!**
 
 _______________
-If you have error: Error: error:0308010C:digital envelope routines::unsupported
+If you will have an error: `Error: error:0308010C:digital envelope routines::unsupported`
 
-Tell Node to use the legacy OpenSSL provider:
-_______________
-On Unix-like (Linux, macOS, Git bash, etc.):
+**Tell Node to use the legacy OpenSSL provider:**
 
-export NODE_OPTIONS=--openssl-legacy-provider
-_______________
-On Windows command prompt:
+* On Unix-like (Linux, macOS, Git bash, etc.):
 
-set NODE_OPTIONS=--openssl-legacy-provider
-_______________
-On PowerShell:
+`export NODE_OPTIONS=--openssl-legacy-provider`
 
-$env:NODE_OPTIONS = "--openssl-legacy-provider"
+* On Windows command prompt:
+
+`set NODE_OPTIONS=--openssl-legacy-provider`
+
+* On PowerShell:
+
+`$env:NODE_OPTIONS = "--openssl-legacy-provider"`
 _______________
+
