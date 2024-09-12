@@ -68,12 +68,13 @@ class Feed extends Component {
     }
     const graphqlQuery = {
       query: `
-        {
-          posts(page: ${page}) {
+        query FetchPosts($page: Int) {
+          posts(page: $page) {
             posts {
               _id
               title
               content
+              imageUrl
               creator {
                 name
               }
@@ -82,7 +83,10 @@ class Feed extends Component {
             totalPosts
           }
         }
-      `
+      `,
+      variables: {
+        page: page
+      }
     }
     fetch('http://localhost:8080/graphql', {
       method: 'POST',
@@ -184,7 +188,7 @@ class Feed extends Component {
     })
       .then(res => res.json())
       .then(fileResData => {
-        let imageUrl = fileResData.filePath
+        let imageUrl = fileResData.filePath || 'undefined'
         /*-----------------------UGLY windows path fix------------------------------*/
         if (imageUrl !== undefined) {
           imageUrl = imageUrl.replace('\\', '/')
@@ -193,8 +197,8 @@ class Feed extends Component {
         /*-----------------------UGLY windows path fix------------------------------*/
         let graphqlQuery = {
           query: `
-          mutation {
-            createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+          mutation CreateNewPost($title: String!, $content: String!, $imageUrl: String!) {
+            createPost(postInput: {title: $title, content: $content, imageUrl: $imageUrl}) {
               _id
               title
               content
@@ -205,14 +209,19 @@ class Feed extends Component {
               createdAt
             }
           }
-        `
+        `,
+          variables: {
+            title: postData.title,
+            content: postData.content,
+            imageUrl: imageUrl
+          }
         }
 
         if (this.state.editPost) {
           graphqlQuery = {
             query: `
-              mutation {
-                updatePost(id: "${this.state.editPost._id}", postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+              mutation UpdateExistingPost($postId: ID!, $title: String!, $content: String!, $imageUrl: String!) {
+                updatePost(id: $postId, postInput: {title: $title, content: $content, imageUrl: $imageUrl}) {
                   _id
                   title
                   content
@@ -223,7 +232,13 @@ class Feed extends Component {
                   createdAt
                 }
               }
-            `
+            `,
+            variables: {
+              postId: this.state.editPost._id,
+              title: postData.title,
+              content: postData.content,
+              imageUrl: imageUrl
+            }
           }
         }
 
